@@ -115,12 +115,11 @@ export default {
       }
     })
       .then(function (response) {
-        console.log(response)
         self.productInfo = response.data.result
-        console.log(self.productInfo)
       })
-      .catch(function (response) {
-        console.log(response)
+      .catch(function (error) {
+        console.log(error.response.data)
+        console.log(error.response.status)
       })
   }
 }
