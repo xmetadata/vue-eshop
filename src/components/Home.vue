@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="home" v-if="productInfo !== null">
     <mt-swipe :auto="4000">
       <mt-swipe-item v-for="slide in productInfo.Slide" :key="slide.slide_id">
         <img :src="image + slide.goods_slide_url">
@@ -60,6 +60,7 @@
 
 <script>
 import Vue from 'vue'
+import { mapGetters, mapActions } from 'vuex'
 import { Swipe, SwipeItem } from 'mint-ui'
 
 Vue.component(Swipe.name, Swipe)
@@ -69,58 +70,23 @@ export default {
   name: 'Home',
   data () {
     return {
-      productInfo: '',
       api: process.env.API_SERVER,
       image: process.env.IMG_SERVER
     }
   },
   computed: {
-    urlName: function () {
-      var host = ''
-      if (Vue.config.productionTip) {
-        host = window.location.host
-      } else {
-        host = 'iphonexshell.etlobby.com'
-      }
-      return host.match(/(\w+)\.(\w+\.\w+)/)[1]
-    },
-    domainName: function () {
-      var host = ''
-      if (Vue.config.productionTip) {
-        host = window.location.host
-      } else {
-        host = 'iphonexshell.etlobby.com'
-      }
-      return host.match(/(\w+)\.(\w+\.\w+)/)[2]
+    ...mapGetters({
+      Product: 'Product'
+    }),
+    ...mapActions({
+      InitProduct: 'InitProduct'
+    }),
+    productInfo () {
+      return this.Product
     }
   },
   created: function () {
-    var self = this
-    this.$axios({
-      url: self.api + '/BestShop/goods/getGoodsInfo.do',
-      method: 'post',
-      data: {
-        urlName: self.urlName,
-        domainName: self.domainName
-      },
-      transformRequest: [function (data) {
-        let ret = ''
-        for (let it in data) {
-          ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
-        }
-        return ret
-      }],
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
-      }
-    })
-      .then(function (response) {
-        self.productInfo = response.data.result
-      })
-      .catch(function (error) {
-        console.log(error.response.data)
-        console.log(error.response.status)
-      })
+    this.$store.dispatch('InitProduct')
   }
 }
 </script>

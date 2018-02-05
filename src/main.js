@@ -10,6 +10,7 @@ import ja from 'vee-validate/dist/locale/ja'
 import zhHK from 'vee-validate/dist/locale/en'
 import zhTW from 'vee-validate/dist/locale/zh_TW'
 import msMY from 'vee-validate/dist/locale/ms_MY'
+import store from './store/index'
 
 Vue.config.productionTip = process.env.NODE_ENV === 'production'
 
@@ -57,6 +58,7 @@ if (Vue.config.productionTip) {
 new Vue({
   el: '#app',
   router,
+  store,
   i18n,
   components: { App },
   template: '<App/>'

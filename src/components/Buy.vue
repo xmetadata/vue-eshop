@@ -18,34 +18,34 @@
         </div>
         <div class="orderNum">
           <span class="price" id="111"> <span>{{ productInfo.Goods.discount_price }}</span>{{ $t("index.productTaxM") }}
-          </span> <span id="goodsNum">× 1</span>
-        </div>
+        </span> <span id="goodsNum">× 1</span>
       </div>
     </div>
-
-    <mt-field :label="$t('buy.trueName')" v-model="trueName" name="trueName" v-validate="'required'"></mt-field>
-    <span v-show="errors.has('trueName')">{{ errors.first('trueName') }}</span>
-
-    <mt-field :label="$t('buy.zipCode')" v-model="zipCode" name="zipCode" v-validate="'required'"></mt-field>
-    <span v-show="errors.has('zipCode')">{{ errors.first('zipCode') }}</span>
-
-    <mt-field :label="$t('buy.cityId')" v-model="cityId" name="cityId" v-validate="'required'"></mt-field>
-    <span v-show="errors.has('cityId')">{{ errors.first('cityId') }}</span>
-
-    <mt-field :label="$t('buy.address')" v-model="address" name="address" v-validate="'required'"></mt-field>
-    <span v-show="errors.has('address')">{{ errors.first('address') }}</span>
-
-    <mt-field :label="$t('buy.telPhone')" v-model="telPhone" name="telPhone" v-validate="'required'"></mt-field>
-    <span v-show="errors.has('telPhone')">{{ errors.first('telPhone') }}</span>
-
-    <mt-field :label="$t('buy.email')" v-model="email" name="email" v-validate="'required|email'"></mt-field>
-    <span v-show="errors.has('email')">{{ errors.first('email') }}</span>
-
-    <mt-field :label="$t('buy.orderMessage')" v-model="orderMessage" name="orderMessage" v-validate="'required'" :placeholder="$t('buy.orderMessage_placeholder')"></mt-field>
-    <span v-show="errors.has('orderMessage')">{{ errors.first('orderMessage') }}</span>
-
-    <mt-button type="danger" size="large" @click.native="doBuy">点击触发 handleClick</mt-button>
   </div>
+
+  <mt-field :label="$t('buy.trueName')" v-model="trueName" name="trueName" v-validate="'required'"></mt-field>
+  <span v-show="errors.has('trueName')">{{ errors.first('trueName') }}</span>
+
+  <mt-field :label="$t('buy.zipCode')" v-model="zipCode" name="zipCode" v-validate="'required'"></mt-field>
+  <span v-show="errors.has('zipCode')">{{ errors.first('zipCode') }}</span>
+
+  <mt-field :label="$t('buy.cityId')" v-model="cityId" name="cityId" v-validate="'required'"></mt-field>
+  <span v-show="errors.has('cityId')">{{ errors.first('cityId') }}</span>
+
+  <mt-field :label="$t('buy.address')" v-model="address" name="address" v-validate="'required'"></mt-field>
+  <span v-show="errors.has('address')">{{ errors.first('address') }}</span>
+
+  <mt-field :label="$t('buy.telPhone')" v-model="telPhone" name="telPhone" v-validate="'required'"></mt-field>
+  <span v-show="errors.has('telPhone')">{{ errors.first('telPhone') }}</span>
+
+  <mt-field :label="$t('buy.email')" v-model="email" name="email" v-validate="'required|email'"></mt-field>
+  <span v-show="errors.has('email')">{{ errors.first('email') }}</span>
+
+  <mt-field :label="$t('buy.orderMessage')" v-model="orderMessage" name="orderMessage" v-validate="'required'" :placeholder="$t('buy.orderMessage_placeholder')"></mt-field>
+  <span v-show="errors.has('orderMessage')">{{ errors.first('orderMessage') }}</span>
+
+  <mt-button type="danger" size="large" @click.native="doBuy">点击触发 handleClick</mt-button>
+</div>
 </template>
 
 <script>
@@ -184,34 +184,37 @@ export default {
       })
     },
     fromatSd: function (orgSd) {
-      var sd_temp = []
-      outer:
+      var sdTemp = []
+      var outer = false
       while (true) {
-        var sd_item = orgSd.pop()
-        if (sd_item === undefined) {
-          break outer // finish
+        var sdItem = orgSd.pop()
+        if (sdItem === undefined) {
+          break
         }
-        for (var i=0; i<sd_temp.length; i++){
-          if (sd_temp[i].sd_id === sd_item.sd_id) {
-            sd_temp[i].sd_value_group.push({"sd_value_id" : sd_item.sd_value_id,
-              "sd_value_image" : sd_item.sd_value_image,
-              "sd_value_name" : sd_item.sd_value_name,
-              "sd_value_sort" : sd_item.sd_value_sort})
-            break outer
+        for (var i = 0; i < sdTemp.length; i++) {
+          if (sdTemp[i].sdId === sdItem.sd_id) {
+            sdTemp[i].sd_value_group.push({'sd_value_id': sdItem.sd_value_id,
+              'sd_value_image': sdItem.sd_value_image,
+              'sd_value_name': sdItem.sd_value_name,
+              'sd_value_sort': sdItem.sd_value_sort})
+            outer = true
           }
         }
+        if (outer) {
+          break
+        }
         // Add new one
-        sd_temp.push({"sd_id" : sd_item.sd_id,
-          "sd_name" : sd_item.sd_name,
-          "sd_view_name" : sd_item.sd_view_name,
-          "sd_format" : sd_item.sd_format,
-          "sd_value_group": [{"sd_value_id" : sd_item.sd_value_id,
-          "sd_value_image" : sd_item.sd_value_image,
-          "sd_value_name" : sd_item.sd_value_name,
-          "sd_value_sort" : sd_item.sd_value_sort}
+        sdTemp.push({'sd_id': sdItem.sd_id,
+          'sd_name': sdItem.sd_name,
+          'sd_view_name': sdItem.sd_view_name,
+          'sd_format': sdItem.sd_format,
+          'sd_value_group': [{'sd_value_id': sdItem.sd_value_id,
+            'sd_value_image': sdItem.sd_value_image,
+            'sd_value_name': sdItem.sd_value_name,
+            'sd_value_sort': sdItem.sd_value_sort}
           ]})
       }
-      return sd_temp
+      return sdTemp
     }
   }
 }
@@ -224,12 +227,12 @@ img{max-width:100%;}
 p{font-size:14px;margin-top:0;margin-bottom:10px;color:#8f8f94;}
 .orderBox{background:white;width:100%;padding:0px;font-size:14px;overflow:auto;}
 .orderBox .orderBoxGoods{overflow:auto;padding:10px;background:#f5f5f5;}
-.orderBox .orderBoxGoods .i-img{float:left;width:20%;}    
+.orderBox .orderBoxGoods .i-img{float:left;width:20%;}
 .orderBox .orderInfo{float:left;width:60%;padding:0px 0 0 2%;}
 .orderBox .orderInfo h5{color:#444;font-size:14px;text-align:left;font-weight:normal;line-height:21px;}
 .orderBox .orderInfo p{color:#999;font-size:12px;text-align:left;line-height:21px;}
 .orderBox .orderNum{float:left;width:10%;font-size:15px;text-align:right;}
 .orderBox .orderNum span{display:block;}
-.orderBox .orderNum .btnDel{padding:2px 15px;margin-top:20px;}    
+.orderBox .orderNum .btnDel{padding:2px 15px;margin-top:20px;}
 .price {color:#be0000;}
 </style>
