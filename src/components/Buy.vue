@@ -184,23 +184,34 @@ export default {
       })
     },
     fromatSd: function (orgSd) {
-      // console.log(orgSd)
-      var newSd = []
-      for (var k = 0, olength = orgSd.length; k < olength; k++) {
-        // console.log(orgSd[k])
-        if (!this.arrayHas(newSd, orgSd[k].sd_id)) {
-          newSd.push(orgSd[k].sd_id)
+      var sd_temp = []
+      outer:
+      while (true) {
+        var sd_item = orgSd.pop()
+        if (sd_item === undefined) {
+          break outer // finish
         }
-      }
-      // console.log(newSd)
-    },
-    arrayHas: function (arr, val) {
-      for (var i = 0; i < arr.length; i++) {
-        if (arr[i] === val) {
-          return true
+        for (var i=0; i<sd_temp.length; i++){
+          if (sd_temp[i].sd_id === sd_item.sd_id) {
+            sd_temp[i].sd_value_group.push({"sd_value_id" : sd_item.sd_value_id,
+              "sd_value_image" : sd_item.sd_value_image,
+              "sd_value_name" : sd_item.sd_value_name,
+              "sd_value_sort" : sd_item.sd_value_sort})
+            break outer
+          }
         }
+        // Add new one
+        sd_temp.push({"sd_id" : sd_item.sd_id,
+          "sd_name" : sd_item.sd_name,
+          "sd_view_name" : sd_item.sd_view_name,
+          "sd_format" : sd_item.sd_format,
+          "sd_value_group": [{"sd_value_id" : sd_item.sd_value_id,
+          "sd_value_image" : sd_item.sd_value_image,
+          "sd_value_name" : sd_item.sd_value_name,
+          "sd_value_sort" : sd_item.sd_value_sort}
+          ]})
       }
-      return false
+      return sd_temp
     }
   }
 }
