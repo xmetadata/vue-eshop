@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="home" v-if="productInfo !== null">
     <!-- header -->
     <mt-header title="确认订单">
       <router-link to="/" slot="left">
@@ -23,25 +23,43 @@
     </div>
   </div>
 
-  <mt-field :label="$t('buy.trueName')" v-model="trueName" name="trueName" v-validate="'required'"></mt-field>
+  <div id="goodsStandard">
+    <ul class="productImg" v-for="sd in sdGroup" :key="sd.sd_id">
+      <label class="label-top" style="display: block;">{{ sd.sd_view_name }}:</label>
+      <li v-for="value_group in sd.sd_value_group"  @click="onSelectSd(sd.sd_id, value_group.sd_value_id)" :key="value_group.sd_value_id" :class="{ selected: value_group.sd_value_id === selectedSd[sd.sd_id] }">
+        <a v-if="value_group.sd_value_image" href="javascript:;" title="">
+          <img :src="image + value_group.sd_value_image">
+        </a>
+        <span>{{ value_group.sd_value_name }}</span>
+      </li>
+    </ul>
+  </div>
+
+  <mt-field :label="$t('buy.trueName')" :state="errors.has('trueName') ? 'error' : ''" v-model="trueName" name="trueName" v-validate="'required'"></mt-field>
   <span v-show="errors.has('trueName')">{{ errors.first('trueName') }}</span>
 
-  <mt-field :label="$t('buy.zipCode')" v-model="zipCode" name="zipCode" v-validate="'required'"></mt-field>
+  <mt-field :label="$t('buy.zipCode')" :state="errors.has('zipCode') ? 'error' : ''" v-model="zipCode" name="zipCode" v-validate="'required'"></mt-field>
   <span v-show="errors.has('zipCode')">{{ errors.first('zipCode') }}</span>
 
-  <mt-field :label="$t('buy.cityId')" v-model="cityId" name="cityId" v-validate="'required'"></mt-field>
+  <mt-field :label="$t('buy.provinceId')" :state="errors.has('provinceId') ? 'error' : ''" v-model="provinceId" name="provinceId" v-validate="'required'" @click.native="popupVisible = true"></mt-field>
+  <span v-show="errors.has('provinceId')">{{ errors.first('provinceId') }}</span>
+  <mt-popup v-model="popupVisible" position="bottom" class="mint-popup-4">
+    <mt-picker :slots="provinceGroup" @change="onProvinceChange"  :visible-item-count="3"></mt-picker>
+  </mt-popup>
+
+  <mt-field :label="$t('buy.cityId')" :state="errors.has('cityId') ? 'error' : ''" v-model="cityId" name="cityId" v-validate="'required'"></mt-field>
   <span v-show="errors.has('cityId')">{{ errors.first('cityId') }}</span>
 
-  <mt-field :label="$t('buy.address')" v-model="address" name="address" v-validate="'required'"></mt-field>
+  <mt-field :label="$t('buy.address')" :state="errors.has('address') ? 'error' : ''" v-model="address" name="address" v-validate="'required'"></mt-field>
   <span v-show="errors.has('address')">{{ errors.first('address') }}</span>
 
-  <mt-field :label="$t('buy.telPhone')" v-model="telPhone" name="telPhone" v-validate="'required'"></mt-field>
+  <mt-field :label="$t('buy.telPhone')" :state="errors.has('telPhone') ? 'error' : ''" v-model="telPhone" name="telPhone" v-validate="'required'"></mt-field>
   <span v-show="errors.has('telPhone')">{{ errors.first('telPhone') }}</span>
 
-  <mt-field :label="$t('buy.email')" v-model="email" name="email" v-validate="'required|email'"></mt-field>
+  <mt-field :label="$t('buy.email')" :state="errors.has('email') ? 'error' : ''" v-model="email" name="email" v-validate="'required|email'"></mt-field>
   <span v-show="errors.has('email')">{{ errors.first('email') }}</span>
 
-  <mt-field :label="$t('buy.orderMessage')" v-model="orderMessage" name="orderMessage" v-validate="'required'" :placeholder="$t('buy.orderMessage_placeholder')"></mt-field>
+  <mt-field :label="$t('buy.orderMessage')" :state="errors.has('orderMessage') ? 'error' : ''" v-model="orderMessage" name="orderMessage" v-validate="'required'" :placeholder="$t('buy.orderMessage_placeholder')"></mt-field>
   <span v-show="errors.has('orderMessage')">{{ errors.first('orderMessage') }}</span>
 
   <mt-button type="danger" size="large" @click.native="doBuy">点击触发 handleClick</mt-button>
@@ -50,20 +68,22 @@
 
 <script>
 import Vue from 'vue'
-import { Cell, Field, Header, Button } from 'mint-ui'
+import { mapGetters, mapActions } from 'vuex'
+import { Field, Header, Button, Popup, Picker } from 'mint-ui'
 import { Validator } from 'vee-validate'
 
 Vue.component(Field.name, Field)
 Vue.component(Header.name, Header)
 Vue.component(Button.name, Button)
-Vue.component(Cell.name, Cell)
+Vue.component(Popup.name, Popup)
+Vue.component(Picker.name, Picker)
 
 const dictionary = {
   ja: {
     attributes: {
-      trueName: 'trueName',
+      trueName: '名字',
       zipCode: 'trueName',
-      provinceId: 'trueName',
+      provinceId: '',
       cityId: '',
       areaId: '',
       address: '',
@@ -73,14 +93,13 @@ const dictionary = {
     }
   }
 }
-
 Validator.localize(dictionary)
 
 export default {
   name: 'Buy',
   data () {
     return {
-      productInfo: '',
+      popupVisible: false,
       api: process.env.API_SERVER,
       image: process.env.IMG_SERVER,
       countryId: '',
@@ -98,58 +117,62 @@ export default {
       address: '',
       telPhone: '',
       email: '',
-      orderMessage: ''
+      orderMessage: '',
+      selectedSd: {}
     }
   },
   computed: {
-    urlName: function () {
-      var host = ''
-      if (Vue.config.productionTip) {
-        host = window.location.host
-      } else {
-        host = 'iphonexshell.etlobby.com'
-      }
-      return host.match(/(\w+)\.(\w+\.\w+)/)[1]
+    ...mapGetters({
+      Product: 'Product'
+    }),
+    ...mapActions({
+      InitProduct: 'InitProduct'
+    }),
+    productInfo () {
+      return this.Product
     },
-    domainName: function () {
-      var host = ''
-      if (Vue.config.productionTip) {
-        host = window.location.host
-      } else {
-        host = 'iphonexshell.etlobby.com'
+    sdGroup () {
+      var productInfo = this.Product
+      var temp = []
+      for (var j = 0; j < productInfo.Standard.length; j++) {
+        var outer = false
+        var sdItem = productInfo.Standard[j]
+        for (var i = 0; i < temp.length; i++) {
+          if (temp[i].sd_id === sdItem.sd_id) {
+            temp[i].sd_value_group.push({'sd_value_id': sdItem.sd_value_id,
+              'sd_value_image': sdItem.sd_value_image,
+              'sd_value_name': sdItem.sd_value_name,
+              'sd_value_sort': sdItem.sd_value_sort})
+            outer = true
+            break
+          }
+        }
+        if (outer) {
+          continue
+        }
+        temp.push({'sd_id': sdItem.sd_id,
+          'sd_name': sdItem.sd_name,
+          'sd_view_name': sdItem.sd_view_name,
+          'sd_format': sdItem.sd_format,
+          'sd_value_group': [{'sd_value_id': sdItem.sd_value_id,
+            'sd_value_image': sdItem.sd_value_image,
+            'sd_value_name': sdItem.sd_value_name,
+            'sd_value_sort': sdItem.sd_value_sort}
+          ]})
       }
-      return host.match(/(\w+)\.(\w+\.\w+)/)[2]
+      console.log(temp)
+      return temp
+    },
+    provinceGroup () {
+      return [{
+        flex: 1,
+        values: ['1984', '1985', '1986', '1987', '1988', '1989', '1990', '1991', '1992', '1993', '1994', '1995'],
+        className: 'slot1'
+      }]
     }
   },
   created: function () {
-    var self = this
-    this.$axios({
-      url: self.api + '/BestShop/goods/getGoodsInfo.do',
-      method: 'post',
-      data: {
-        urlName: self.urlName,
-        domainName: self.domainName
-      },
-      transformRequest: [function (data) {
-        let ret = ''
-        for (let it in data) {
-          ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
-        }
-        return ret
-      }],
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
-      }
-    })
-      .then(function (response) {
-        self.productInfo = response.data.result
-        console.log(self.productInfo)
-        self.fromatSd(self.productInfo.Standard)
-      })
-      .catch(function (error) {
-        console.log(error.response.data)
-        console.log(error.response.status)
-      })
+    this.$store.dispatch('InitProduct')
   },
   methods: {
     doBuy: function () {
@@ -183,38 +206,12 @@ export default {
         }
       })
     },
-    fromatSd: function (orgSd) {
-      var sdTemp = []
-      var outer = false
-      while (true) {
-        var sdItem = orgSd.pop()
-        if (sdItem === undefined) {
-          break
-        }
-        for (var i = 0; i < sdTemp.length; i++) {
-          if (sdTemp[i].sdId === sdItem.sd_id) {
-            sdTemp[i].sd_value_group.push({'sd_value_id': sdItem.sd_value_id,
-              'sd_value_image': sdItem.sd_value_image,
-              'sd_value_name': sdItem.sd_value_name,
-              'sd_value_sort': sdItem.sd_value_sort})
-            outer = true
-          }
-        }
-        if (outer) {
-          break
-        }
-        // Add new one
-        sdTemp.push({'sd_id': sdItem.sd_id,
-          'sd_name': sdItem.sd_name,
-          'sd_view_name': sdItem.sd_view_name,
-          'sd_format': sdItem.sd_format,
-          'sd_value_group': [{'sd_value_id': sdItem.sd_value_id,
-            'sd_value_image': sdItem.sd_value_image,
-            'sd_value_name': sdItem.sd_value_name,
-            'sd_value_sort': sdItem.sd_value_sort}
-          ]})
-      }
-      return sdTemp
+    onProvinceChange: function (picker, values) {
+      this.provinceId = values[0]
+    },
+    onSelectSd: function (sdId, sdValueId) {
+      this.$set(this.selectedSd, sdId, sdValueId)
+      console.log(this.selectedSd)
     }
   }
 }
@@ -235,4 +232,13 @@ p{font-size:14px;margin-top:0;margin-bottom:10px;color:#8f8f94;}
 .orderBox .orderNum span{display:block;}
 .orderBox .orderNum .btnDel{padding:2px 15px;margin-top:20px;}
 .price {color:#be0000;}
+.mint-popup-4 {width: 100%;}
+.productImg{width:100%;height:auto;margin:0;padding:0;overflow:hidden;}
+.productImg li{width:33%;float:left;height:120px;position:relative;margin:0 auto;text-align:center;list-style:none;}
+.productImg li span{padding:5px;display:block;word-wrap:break-word;white-space:pre-wrap;white-space:-moz-pre-wrap}
+.productImg li a{width:80px;padding:1px;border:1px solid #ccc;display:block;margin:0 auto;}
+.productImg li a img{display:flex;justify-content:center;align-items:center;margin:0 auto;}
+.productImg li a:hover{border:2px solid #be0000;padding:0;text-decoration:none;color:#be0000}
+.productImg li.selected a{border:2px solid #be0000;padding:0;color:#be0000}
+.productImg li.selected i{display:block;}
 </style>

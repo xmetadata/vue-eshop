@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 // var host = window.location.host
-var host = 'iphonexshell.etlobby.com'
+var host = 'fashionsneaker.etlobby.com'
 
 const data = {
   urlName: host.match(/(\w+)\.(\w+\.\w+)/)[1],
@@ -22,7 +22,8 @@ export default {
         return ret
       }],
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+        'Accept': '*/*'
       }
     })
   }
