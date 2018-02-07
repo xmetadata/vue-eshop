@@ -5,5 +5,6 @@ const prodEnv = require('./prod.env')
 module.exports = merge(prodEnv, {
   NODE_ENV: '"development"',
   API_SERVER: '"apis"',
-  IMG_SERVER: '"http://eshop.xmetadata.com"'
+  IMG_SERVER: '"http://eshop.xmetadata.com"',
+  HOST: '"vue.xmetadata.com"'
 })
