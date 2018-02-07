@@ -1,19 +1,14 @@
 // i18n-setup.js
 import Vue from 'vue'
 import VueI18n from 'vue-i18n'
-import messages from './lang/zh_HK'
 import axios from 'axios'
 
 Vue.use(VueI18n)
 
-export const i18n = new VueI18n({
-  locale: 'zh_HK', // set locale
-  fallbackLocale: 'zh_HK',
-  messages // set locale messages
-})
+export const i18n = new VueI18n()
 
 // our default language that is prelaoded
-const loadedLanguages = ['zh_HK']
+const loadedLanguages = []
 
 function setI18nLanguage (lang) {
   i18n.locale = lang
