@@ -25,7 +25,7 @@ export default {
     name: '氏名',
     name_placeholder: '必填、宛名記入',
     phone: '携帯電話',
-    phone_placeholder: '必填記入し、受信者連絡電話',
+    phone_placeholder: '記入し、受信者連絡電話',
     satisfactions: '満足度',
     uploadImage: '画像をアップロード',
     diolog: 'この画像を削除しますか？',
