@@ -131,7 +131,7 @@ const dictionary = {
       orderMessage: 'メッセージ'
     }
   },
-  zh_HK: {
+  en: {
     attributes: {
       trueName: 'Full name',
       zipCode: 'Postal Code',
