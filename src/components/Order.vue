@@ -62,7 +62,7 @@
   <mt-field :label="$t('buy.zipCode')" :state="errors.has('zipCode') ? 'error' : ''" v-model="zipCode" name="zipCode" v-validate="'required'"></mt-field>
   <span v-show="errors.has('zipCode')">{{ errors.first('zipCode') }}</span>
 
-  <mt-field :label="$t('buy.provinceId')" :state="errors.has('provinceId') ? 'error' : ''" v-model="provinceId" name="provinceId" v-validate="'required'" @click.native="popupVisible = true"></mt-field>
+  <mt-field :label="$t('buy.provinceId')" :state="errors.has('provinceId') ? 'error' : ''" v-model="provinceId" :disabled="true" name="provinceId" v-validate="'required'" @click.native="popupVisible = true"></mt-field>
   <span v-show="errors.has('provinceId')">{{ errors.first('provinceId') }}</span>
   <mt-popup v-model="popupVisible" position="bottom" class="mint-popup-4">
     <mt-picker :slots="provinceGroup" @change="onProvinceChange"></mt-picker>
@@ -82,7 +82,7 @@
 
   <mt-field :label="$t('buy.orderMessage')" name="orderMessage" :placeholder="$t('buy.orderMessage_placeholder')"></mt-field>
 
-  <mt-field :label="$t('buy.pay')" :value="productInfo.Goods.extend_fee_value"></mt-field>
+  <mt-field :label="$t('buy.pay')" :value="productInfo.Goods.extend_fee_value" :disabled="true"></mt-field>
 
   <div class="line">
     <span>{{ $t("buy.line1") }}</span>
@@ -202,7 +202,7 @@ export default {
     },
     countryId: function () {
       let countryMap = {
-        'xmetadata.com': 'JP',
+        'xmetadata.com': 'zh_CN',
         'etlobby.com': 'JP',
         'fitanow.com': 'HK',
         'hiqushop.com': 'TW',

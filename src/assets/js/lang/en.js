@@ -18,7 +18,7 @@ export default {
     infoMation: 'Matters',
     detialAppraise: 'Recent Reviews',
     go_appraise: 'Write Your Review',
-    infoTable: '<div class="infoTable"><div class="footerBox"><img src="image/footer_en.jpg" width="100%" /></div><div class="footerBtn"><div style="padding:5px 20px; text-align:left;  background-color:#eee;color:#7B7A7A"><p style="margin-bottom:0px;"><font color="#F8770E"><b>Notice：</b></font>Welcome!<br>If you have any questions or suggestions about our products or services,<a href="mailto:fitanow.service@gmail.com" style="color:#F8770E">fitanow.service@gmail.com</a> please feel free to contact us online at any time. We will answer all your questions in detail.</p>  </div></div></div>',
+    infoTable: '<div class="infoTable"><div class="footerBox"><img src="./assets/image/footer_en.jpg" width="100%" /></div><div class="footerBtn"><div style="padding:5px 20px; text-align:left;  background-color:#eee;color:#7B7A7A"><p style="margin-bottom:0px;"><font color="#F8770E"><b>Notice：</b></font>Welcome!<br>If you have any questions or suggestions about our products or services,<a href="mailto:fitanow.service@gmail.com" style="color:#F8770E">fitanow.service@gmail.com</a> please feel free to contact us online at any time. We will answer all your questions in detail.</p>  </div></div></div>',
     go_to_buy: 'Buy Now',
     online: 'Online Chat',
     commentHd: 'Type your message',

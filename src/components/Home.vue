@@ -48,18 +48,65 @@
       <li><span href="#detialAppraise" class="scrollBar" scroll-y="50">{{ $t("index.detial") }}</span></li>
       <li><span href="#infoMation" class="scrollBar" scroll-y="40">{{ $t("index.infoMation") }}</span></li>
     </ul>
+
     <div class="detailBlock" id="detialContext" style="padding-top:10px">
       <div v-html="productInfo.Goods.goods_desc"></div>
     </div>
+
     <div class="detailBlock" id="detialParams">
       <div v-html="productInfo.Goods.goods_info"></div>
     </div>
-    <router-view/>
+
+    <div class="detailBlock" id="detialAppraise" style="position:relative;padding-bottom:5px;">
+      <h4>{{ $t("index.detialAppraise") }}</h4>
+      <!--for comment-->
+      <div id="mq">
+        <div id="FontScroll">
+          <ul class="line">
+            <li v-for="comment in goodsComment" :key="comment.comment_id">
+              <div id="mq1">
+                <div class="reviewTitle">
+                  <span class="reviewTitleLeft" style="color:#be0000;">{{ comment.name }}</span>
+                  <span class="reviewTitleLeft">
+                    {{ $t("index.satisfactions") }}：
+                    <font color="#be0000">★★★★★</font></span>
+                  <span class="reviewTitleLeft">{{ comment.comment_time }}</span>
+                </div>
+                <div class="reviewMain">
+                  <p>{{ comment.content }}</p>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div id="mq2"></div>
+      </div>
+      <!--for comment-->
+      <div class="go-appraise" id="detail-shopping">
+        <a class="btnAppr" style="">{{ $t("index.go_appraise") }}</a>
+      </div>
+    </div>
+
+    <div v-html="$t('index.infoTable')"></div>
+
+    <!--footBar-->
+    <div class="footBar" style="box-shadow: 0px -2px 1px #dad8d8;">
+      <span class="purchase" id="btnPay">
+        <a href="/#/order">
+          <img src="../assets/image/buyq1.png" />
+          <span style="line-height:20px;margin-top:5%">{{ $t("index.go_to_buy") }}</span>
+        </a>
+      </span>
+      <span class="service" id="btnOnline">
+        <img src="../assets/image/service.png" />
+      </span>
+    </div>
   </div>
 </template>
 
 <script>
 import Vue from 'vue'
+import api from '../api'
 import { mapGetters, mapActions } from 'vuex'
 import { Swipe, SwipeItem } from 'mint-ui'
 
@@ -71,7 +118,8 @@ export default {
   data () {
     return {
       api: process.env.API_SERVER,
-      image: process.env.IMG_SERVER
+      image: process.env.IMG_SERVER,
+      goodsComment: ''
     }
   },
   computed: {
@@ -86,7 +134,16 @@ export default {
     }
   },
   created: function () {
+    let self = this
     this.$store.dispatch('InitProduct')
+    api.getComment().then(function (response) {
+      console.log(response.data.result)
+      self.goodsComment = response.data.result
+    })
+      .catch(function (error) {
+        console.log(error.response.data)
+        console.log(error.response.status)
+      })
   }
 }
 </script>
