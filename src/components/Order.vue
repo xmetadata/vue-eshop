@@ -106,10 +106,9 @@
 
 <script>
 import Vue from 'vue'
-import api from '../api'
 import location from '../assets/js/location'
 import { mapGetters, mapActions } from 'vuex'
-import { Field, Header, Button, Popup, Picker } from 'mint-ui'
+import { Field, Header, Button, Popup, Picker, MessageBox } from 'mint-ui'
 import { Validator } from 'vee-validate'
 
 Vue.component(Field.name, Field)
@@ -177,7 +176,6 @@ export default {
       api: process.env.API_SERVER,
       image: process.env.IMG_SERVER,
       popupVisible: false,
-      selectedSd: {},
       goodsNum: 1,
       trueName: '',
       zipCode: '',
@@ -187,15 +185,18 @@ export default {
       address: '',
       telPhone: '',
       email: '',
-      orderMessage: ''
+      orderMessage: '',
+      selectedSd: {}
     }
   },
   computed: {
     ...mapGetters({
-      Product: 'Product'
+      Product: 'Product',
+      Order: 'Order'
     }),
     ...mapActions({
-      InitProduct: 'InitProduct'
+      InitProduct: 'InitProduct',
+      InitOrder: 'InitOrder'
     }),
     productInfo () {
       return this.Product
@@ -273,34 +274,46 @@ export default {
   },
   methods: {
     doBuy: function () {
+      for (let i = 0; i < this.sdGroup.length; i++) {
+        console.log(this.selectedSd[this.sdGroup[i]])
+        if (this.selectedSd[this.sdGroup[i].sd_id] === undefined) {
+          MessageBox({
+            title: 'Notice!',
+            message: 'Please select SD',
+            confirmButtonText: 'OK'
+          })
+          return false
+        }
+      }
       this.$validator.validateAll().then((result) => {
         if (result) {
-          let data = {
-            countryId: this.countryId,
-            goodsId: this.productInfo.Goods.goods_id,
-            sdGroupId: this.productInfo.Goods.sd_group_id,
-            sdInfo: this.sdInfo,
-            goodsNum: this.goodsNum,
-            goodsAmount: this.productInfo.Goods.discount_price,
-            OrderAmount: this.OrderAmount,
-            trueName: this.trueName,
-            zipCode: this.zipCode,
-            provinceId: this.provinceId,
-            cityId: this.cityId,
-            areaId: this.areaId,
-            address: this.address,
-            telPhone: this.telPhone,
-            email: this.email,
-            orderMessage: this.orderMessage
-          }
-          console.log(data)
-          api.createOrder(data).then(function (response) {
-            console.log(response.data.result)
-          })
-            .catch(function (error) {
-              console.log(error.response.data)
-              console.log(error.response.status)
+          if (this.Order !== null) {
+            MessageBox({
+              title: 'Notice',
+              message: 'Duplicate Order',
+              confirmButtonText: 'OK'
             })
+          } else {
+            let data = {
+              countryId: this.countryId,
+              goodsId: this.productInfo.Goods.goods_id,
+              sdGroupId: this.productInfo.Goods.sd_group_id,
+              sdInfo: this.sdInfo,
+              goodsNum: this.goodsNum,
+              goodsAmount: this.productInfo.Goods.discount_price,
+              OrderAmount: this.OrderAmount,
+              trueName: this.trueName,
+              zipCode: this.zipCode,
+              provinceId: this.provinceId,
+              cityId: this.cityId,
+              areaId: this.areaId,
+              address: this.address,
+              telPhone: this.telPhone,
+              email: this.email,
+              orderMessage: this.orderMessage
+            }
+            this.$store.dispatch('InitOrder', data)
+          }
         }
       })
     },
@@ -308,8 +321,8 @@ export default {
       this.provinceId = values[0]
     },
     onSelectSd: function (sdId, sdValueId) {
-      this.$set(this.selectedSd, sdId, sdValueId)
       console.log(this.selectedSd)
+      this.$set(this.selectedSd, sdId, sdValueId)
     }
   }
 }

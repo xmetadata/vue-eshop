@@ -57,35 +57,7 @@
       <div v-html="productInfo.Goods.goods_info"></div>
     </div>
 
-    <div class="detailBlock" id="detialAppraise" style="position:relative;padding-bottom:5px;">
-      <h4>{{ $t("index.detialAppraise") }}</h4>
-      <!--for comment-->
-      <div id="mq">
-        <div id="FontScroll">
-          <ul class="line">
-            <li v-for="comment in goodsComment" :key="comment.comment_id">
-              <div id="mq1">
-                <div class="reviewTitle">
-                  <span class="reviewTitleLeft" style="color:#be0000;">{{ comment.name }}</span>
-                  <span class="reviewTitleLeft">
-                    {{ $t("index.satisfactions") }}：
-                    <font color="#be0000">★★★★★</font></span>
-                  <span class="reviewTitleLeft">{{ comment.comment_time }}</span>
-                </div>
-                <div class="reviewMain">
-                  <p>{{ comment.content }}</p>
-                </div>
-              </div>
-            </li>
-          </ul>
-        </div>
-        <div id="mq2"></div>
-      </div>
-      <!--for comment-->
-      <div class="go-appraise" id="detail-shopping">
-        <a class="btnAppr" style="">{{ $t("index.go_appraise") }}</a>
-      </div>
-    </div>
+    <comment></comment>
 
     <div v-html="$t('index.infoTable')"></div>
 
@@ -106,7 +78,7 @@
 
 <script>
 import Vue from 'vue'
-import api from '../api'
+import Comment from './Comment'
 import { mapGetters, mapActions } from 'vuex'
 import { Swipe, SwipeItem } from 'mint-ui'
 
@@ -122,6 +94,9 @@ export default {
       goodsComment: ''
     }
   },
+  components: {
+    'comment': Comment
+  },
   computed: {
     ...mapGetters({
       Product: 'Product'
@@ -134,27 +109,13 @@ export default {
     }
   },
   created: function () {
-    let self = this
     this.$store.dispatch('InitProduct')
-    api.getComment().then(function (response) {
-      console.log(response.data.result)
-      self.goodsComment = response.data.result
-    })
-      .catch(function (error) {
-        console.log(error.response.data)
-        console.log(error.response.status)
-      })
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.mint-swipe {
-  width: 100%;
-  height: 500px;
-}
-.img {
-  max-width: 100%;
-}
+.mint-swipe {width: 100%;height: 380px;}
+.img {max-width: 100%;}
 </style>

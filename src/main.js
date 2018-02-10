@@ -40,8 +40,6 @@ router.beforeEach((to, from, next) => {
   loadLanguageAsync(lang).then(() => next())
 })
 
-console.log(i18n.locale)
-
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

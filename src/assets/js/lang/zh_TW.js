@@ -18,7 +18,7 @@ export default {
     infoMation: '注意事項',
     detialAppraise: '最新評價',
     go_appraise: '我要評價',
-    infoTable: '<div class="infoTable"><div class="footerBox"><img src="image/footer_tw.jpg" width="100%" /></div><div class="footerBtn"><div style="padding:5px 20px; text-align:left;  background-color:#eee;color:#7B7A7A"><p style="margin-bottom:0px;"><font color="#F8770E"><b>溫馨提示：</b></font>收到商品後有任何疑問請聯繫在線客服或發郵件至<a href="mailto:hiqushop.service@yahoo.com" style="color:#F8770E">hiqushop.service@yahoo.com</a> 。同時請告知您的姓名及聯繫方式及訂單編號，我們能快速的給您及時處理唷，祝您購物愉快！</p>  </div></div></div>',
+    infoTable: '<div class="infoTable"><div class="footerBox"><img src="/static/footer_tw.jpg" width="100%" /></div><div class="footerBtn"><div style="padding:5px 20px; text-align:left;  background-color:#eee;color:#7B7A7A"><p style="margin-bottom:0px;"><font color="#F8770E"><b>溫馨提示：</b></font>收到商品後有任何疑問請聯繫在線客服或發郵件至<a href="mailto:hiqushop.service@yahoo.com" style="color:#F8770E">hiqushop.service@yahoo.com</a> 。同時請告知您的姓名及聯繫方式及訂單編號，我們能快速的給您及時處理唷，祝您購物愉快！</p>  </div></div></div>',
     go_to_buy: '立即購買',
     online: '在線咨詢',
     commentHd: '在線留言',
