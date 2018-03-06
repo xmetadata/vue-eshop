@@ -2,17 +2,14 @@
 body{margin:0 auto;min-width:320px;max-width:640px;height:100%;background:#FFF;font-family:'Helvetica Neue',Helvetica,sans-serif;font-size:14px;line-height:20px;color:#000;-webkit-overflow-scrolling:touch;}
 ul{list-style:none;margin:0;padding:0}
 li{list-style:none;}
-a{color:#555;text-decoration:none;}
 img{border:none;}
 img{max-width:100%;}
-a:active{color:#0062cc;}
 h1,h2,h3,h4,h5,h6{line-height:1;margin-top:5px;margin-bottom:5px;}
 b,strong{font-weight:700}
 p{font-size:14px;margin-top:0;margin-bottom:10px;color:#8f8f94;}
-button,html input[type=button],input[type=reset],input[type=submit]{cursor:pointer;-webkit-appearance:button}
 .clearfix:after{visibility:hidden;display:block;font-size:0;content:" ";clear:both;height:0;}
 .clear {clear:both;}
-*{-webkit-box-sizing:border-box;box-sizing:border-box;-webkit-user-select:none;outline:0;-webkit-tap-highlight-color:transparent;-webkit-tap-highlight-color:transparent;}
+*{-webkit-box-sizing:border-box;box-sizing:border-box;outline:0;-webkit-tap-highlight-color:transparent;-webkit-tap-highlight-color:transparent;}
 /*主题框架*/
 .content{background-color:#fff;-webkit-overflow-scrolling:touch}
 .contentNav{padding-top:40px;}  
@@ -28,13 +25,13 @@ button,html input[type=button],input[type=reset],input[type=submit]{cursor:point
 .productTitle {background:white;padding:10px 5px;height:auto;border-bottom:1px dashed #dcdcdc;}
 .productTitle h3{text-align:left;font-size:16px;}
 /*产品-累计*/
-.productNumber{background:white;padding:10px 5px;height:40px;border-bottom:1px dashed #dcdcdc}
+.productNumber{background:white;padding:10px 5px;height:20px;border-bottom:1px dashed #dcdcdc}
 .productNumberLeft{display:block;float:left}
 .productNumberRight{width:120px;height:5px;border:1px solid #be0000;display:block;float:left;margin:7px}
 .productNumberSpan{width:97%;height:4px;background:#be0000;display:block;}
 /*产品-价格*/
-.productTax{background:white;border-bottom:1px dashed #dcdcdc;padding:6px}
-.productTimeWrap{float:right;margin-right:0px;margin-top:-30px;color:black;display:inline;}
+.productTax{background:white;border-bottom:1px dashed #dcdcdc;padding:6px;color:black;}
+.productTimeWrap{margin-right:0px;margin-top:10px;color:black;font-size:22px}
 #timer {font-size:16px;color:#be0000;}
 /*产品-注意事项*/
 .productProfile{background:white;padding:10px 5px;color:#be0000;min-height:30px}
@@ -42,12 +39,12 @@ button,html input[type=button],input[type=reset],input[type=submit]{cursor:point
 /*产品-锚点*/
 .productBars{list-style-type:none;background:white;height:40px;width:100%;max-width:640px;border:1px solid #ddd}
 .productBars li{line-height:38px;border-right:1px solid #ddd;float:left;cursor:pointer;font-size:12px;text-align:center}
-.productBars li:nth-child(1){width:25%}
-.productBars li:nth-child(2){width:25%}
-.productBars li:nth-child(3){width:25%}
-.productBars li:nth-child(4){width:25%}
+.productBars li:nth-child(1){width:24%}
+.productBars li:nth-child(2){width:24%}
+.productBars li:nth-child(3){width:24%}
+.productBars li:nth-child(4){width:24%}
 .productBars li:last-child{border-right:0}
-.productBars li a{color:#666;display:block}
+.productBars li a{color:black;display:block;text-decoration:none}
 .fixed{position:fixed;z-index:999;top:0}
 .first.odd p{margin-bottom:0!important}
 /*产品-详情*/
@@ -57,7 +54,7 @@ button,html input[type=button],input[type=reset],input[type=submit]{cursor:point
 .detailBlock h4{font-size:13px;font-weight:normal;background:#e7e7e7;border-bottom:1px solid #ccc;border-top:1px solid #ccc;line-height:37px;text-align:center}
 .detailBlock img{width:100%}
 /*产品-评论内容滚动*/
-#FontScroll{width:100%;overflow:Hidden;padding:10px;margin:0 auto;height:220px;}
+#FontScroll{overflow:Hidden;padding:10px;margin:0 auto;height:220px;}
 #FontScroll ul li {color:#8f8f94 !important;font-weight:500 !important;margin-bottom:10%;}
 #FontScroll .line{text-align:left;width:100%;padding:0;}
 #FontScroll .fontColor a{color:red;}
@@ -65,7 +62,7 @@ button,html input[type=button],input[type=reset],input[type=submit]{cursor:point
 .reviewTitleLeft{color:#000;margin:0px 3px}
 .reviewTitleMiddle{}
 .reviewTitleRight{margin-left:3px;font-size:12px}
-.reviewMain{margin-top:0px;margin-bottom:10px;font-family:Open Sans;font-size:13px;white-space:normal;background-color:#fff;}
+.reviewMain{margin-top:0px;margin-right:10px;margin-bottom:10px;font-family:Open Sans;font-size:13px;white-space:normal;background-color:#fff;}
 /*产品-弹出评论框*/
 #detialContext{margin-top:0}
 #detialAppraise{padding-bottom:10px}
@@ -95,7 +92,7 @@ button,html input[type=button],input[type=reset],input[type=submit]{cursor:point
 .z_alert p:nth-child(2) span{display:inline-block;width:49%;height:.5rem;line-height:.5rem;float:left;border-top:1px solid #ddd}
 .z_cancel{border-right:1px solid #ddd}
 /*注意事项*/
-.infoTable{padding:0px;padding-bottom:40px;}
+.infoTable{padding:0px;padding-bottom:40px;background-color: #efeff4;}
 .dataTable{width:97%;margin:1.5%;font-size:14px;color:#666}
 .dataTable th{border:1px solid #ccc;font-weight:100;padding:5px}
 .dataTable tr{height:27px}
@@ -122,7 +119,7 @@ button,html input[type=button],input[type=reset],input[type=submit]{cursor:point
 .query img, .service img {float:left;max-width:30px;margin:0px auto;margin-top:2px;margin-left:0%;margin-right:1px;}
 .fot {width:100%;text-align:center;line-height:1.2;padding-top:2px;font-size:12px;}
 .footBar .purchase a span {line-height:50px;float:left;font-size:20px;text-align:center;}
-@media screen and (max-width:656px){.footBar .purchase {width:60%;height:47px;}.footBar .service, .query {width:39.6%;}.footBar .purchase img{width:28px;height:auto;margin-top:8px;margin-left:7.5%;}.footBar .service img, .query img{width:28px;height:auto;margin-top:0px;}.footBar .service, .query {height:47px;}.footBar .purchase a span {line-height:47px;font-size:14px;width:65%;}.footBar .purchase span {line-height:47px;font-size:20px;}.service a, .query a {float:left;font-size:12px;line-height:16px;}.service a img, .query a img{vertical-align:middle;}.footBar img .purchase img {margin-top:3px;}.query img, .service img {margin-left:2%;}.service a, .query a {margin-left:8%;}.service a, .query a {margin-top:0px;}.fot p {font-size:11px;}.service a, .query a {font-size:6px;}}
+@media screen and (max-width:656px){.footBar .purchase {width:60%;height:47px;}.footBar .service, .query {width:39.3%;}.footBar .purchase img{width:28px;height:auto;margin-top:8px;margin-left:7.5%;}.footBar .service img, .query img{width:28px;height:auto;margin-top:0px;}.footBar .service, .query {height:47px;}.footBar .purchase a span {line-height:47px;font-size:14px;width:65%;}.footBar .purchase span {line-height:47px;font-size:20px;}.service a, .query a {float:left;font-size:12px;line-height:16px;}.service a img, .query a img{vertical-align:middle;}.footBar img .purchase img {margin-top:3px;}.query img, .service img {margin-left:2%;}.service a, .query a {margin-left:8%;}.service a, .query a {margin-top:0px;}.fot p {font-size:11px;}.service a, .query a {font-size:6px;}}
 .service a, .query a {font-size:10px;}
 @media screen and (max-width:320px){.footBar .purchase img{width:24px;height:auto;margin-top:8px;}.footBar .service img, .query img{width:24px;height:auto;margin-top:8px;}.footBar .query {width:27.5%;}.footBar .purchase {width:40%;}.footBar .service {width:31.5%;}.query img, .service img {margin-left:2%;}}  
 /*************************订单追踪页面**************************/   
@@ -171,9 +168,9 @@ button,html input[type=button],input[type=reset],input[type=submit]{cursor:point
 /*订单主体*/
 /*产品简介*/
 .orderBox{background:white;width:100%;padding:0px;font-size:14px;overflow:auto;}
-.orderBox .orderBoxGoods{overflow:auto;padding:10px;background:#f5f5f5;}
+.orderBox .orderBoxGoods{overflow:auto;padding:10px 0px;background:#f5f5f5;}
 .orderBox .orderBoxGoods .i-img{float:left;width:20%;}    
-.orderBox .orderInfo{float:left;width:60%;padding:0px 0 0 2%;}
+.orderBox .orderInfo{float:left;width:55%;padding:0px 0 0 2%;}
 .orderBox .orderInfo h5{color:#444;font-size:14px;text-align:left;font-weight:normal;line-height:21px;}
 .orderBox .orderInfo p{color:#999;font-size:12px;text-align:left;line-height:21px;}
 .orderBox .orderNum{float:left;width:20%;font-size:15px;text-align:right;}

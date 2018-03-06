@@ -27,9 +27,9 @@
   </div>
 
   <div id="goodsStandard">
-    <ul class="productImg" v-for="sd in sdGroup" :key="sd.sd_id">
+    <ul class="productImg" v-for="sd in sdGroup.Standard" :key="sd.sd_id">
       <label class="label-top" style="display: block;">{{ sd.sd_view_name }}:</label>
-      <li v-for="value_group in sd.sd_value_group"  @click="onSelectSd(sd.sd_id, value_group.sd_value_id)" :key="value_group.sd_value_id" :class="{ selected: value_group.sd_value_id === selectedSd[sd.sd_id] }">
+      <li v-for="value_group in sd.sd_values"  @click="onSelectSd(sd.sd_id, value_group.sd_value_id)" :key="value_group.sd_value_id" :class="{ selected: value_group.sd_value_id === selectedSd[sd.sd_id] }">
         <div v-if="value_group.sd_value_image" >
           <a href="javascript:;" :title="value_group.sd_value_id">
             <img :src="image + value_group.sd_value_image">
@@ -68,7 +68,8 @@
     <mt-picker :slots="provinceGroup" @change="onProvinceChange"></mt-picker>
   </mt-popup>
 
-  <mt-field :label="$t('buy.cityId')" :state="errors.has('cityId') ? 'error' : ''" v-model="cityId" name="cityId" v-validate="'required'"></mt-field>
+  <mt-field v-if="countryId == 'JP' " :label="$t('buy.cityId')" :state="errors.has('cityId') ? 'error' : ''" v-model="cityId" name="cityId" v-validate="'required'"></mt-field>
+
   <span v-show="errors.has('cityId')">{{ errors.first('cityId') }}</span>
 
   <mt-field :label="$t('buy.address')" :state="errors.has('address') ? 'error' : ''" v-model="address" name="address" v-validate="'required'"></mt-field>
@@ -82,7 +83,16 @@
 
   <mt-field :label="$t('buy.orderMessage')" name="orderMessage" :placeholder="$t('buy.orderMessage_placeholder')"></mt-field>
 
-  <mt-field :label="$t('buy.pay')" :value="productInfo.Goods.extend_fee_value" :disabled="true"></mt-field>
+  <mt-field v-if="countryId == 'JP' " :label="$t('buy.pay')" :value="productInfo.Goods.extend_fee_value" :disabled="true">
+    {{ $t("buy.payType") }}
+    <span>{{ productInfo.Goods.extend_fee_value }} {{ $t("buy.payTypeR") }}</span>
+  </mt-field>
+  <mt-field v-else-if="countryId == 'TW'" :label="$t('buy.pay')" :value="productInfo.Goods.extend_fee_value" :disabled="true">
+    <img src="../assets/image/payTypeZH.png" style="width:auto;">
+  </mt-field>
+  <mt-field v-else :label="$t('buy.pay')" :value="productInfo.Goods.extend_fee_value" :disabled="true">
+    <img src="../assets/image/payTypeZH.png" style="width:auto;">
+  </mt-field>
 
   <div class="line">
     <span>{{ $t("buy.line1") }}</span>
@@ -192,6 +202,7 @@ export default {
   computed: {
     ...mapGetters({
       Product: 'Product',
+      Standard: 'Standard',
       Order: 'Order'
     }),
     ...mapActions({
@@ -200,6 +211,9 @@ export default {
     }),
     productInfo () {
       return this.Product
+    },
+    sdGroup () {
+      return this.Standard
     },
     countryId: function () {
       let countryMap = {
@@ -226,37 +240,6 @@ export default {
       }
       return temp
     },
-    sdGroup () {
-      let productInfo = this.Product
-      let temp = []
-      for (let j = 0; j < productInfo.Standard.length; j++) {
-        let outer = false
-        let sdItem = productInfo.Standard[j]
-        for (let i = 0; i < temp.length; i++) {
-          if (temp[i].sd_id === sdItem.sd_id) {
-            temp[i].sd_value_group.push({'sd_value_id': sdItem.sd_value_id,
-              'sd_value_image': sdItem.sd_value_image,
-              'sd_value_name': sdItem.sd_value_name,
-              'sd_value_sort': sdItem.sd_value_sort})
-            outer = true
-            break
-          }
-        }
-        if (outer) {
-          continue
-        }
-        temp.push({'sd_id': sdItem.sd_id,
-          'sd_name': sdItem.sd_name,
-          'sd_view_name': sdItem.sd_view_name,
-          'sd_format': sdItem.sd_format,
-          'sd_value_group': [{'sd_value_id': sdItem.sd_value_id,
-            'sd_value_image': sdItem.sd_value_image,
-            'sd_value_name': sdItem.sd_value_name,
-            'sd_value_sort': sdItem.sd_value_sort}
-          ]})
-      }
-      return temp
-    },
     provinceGroup () {
       let locationMap = {
         'xmetadata.com': location.JP,
@@ -270,17 +253,19 @@ export default {
     }
   },
   created: function () {
-    this.$store.dispatch('InitProduct')
+    if (this.$store.state.product.product == null) {
+      this.$store.dispatch('InitProduct')
+    }
   },
   methods: {
     doBuy: function () {
-      for (let i = 0; i < this.sdGroup.length; i++) {
-        console.log(this.selectedSd[this.sdGroup[i]])
-        if (this.selectedSd[this.sdGroup[i].sd_id] === undefined) {
+      for (let i = 0; i < this.sdGroup.Standard.length; i++) {
+        console.log(this.selectedSd[this.sdGroup.Standard[i]])
+        if (this.selectedSd[this.sdGroup.Standard[i].sd_id] === undefined) {
           MessageBox({
-            title: 'Notice!',
-            message: 'Please select SD',
-            confirmButtonText: 'OK'
+            title: this.$i18n.t('buy.buyMessageTitle'),
+            message: this.$i18n.t('buy.buyMessage'),
+            confirmButtonText: this.$i18n.t('index.sure')
           })
           return false
         }
@@ -289,9 +274,9 @@ export default {
         if (result) {
           if (this.Order !== null) {
             MessageBox({
-              title: 'Notice',
-              message: 'Duplicate Order',
-              confirmButtonText: 'OK'
+              title: this.$i18n.t('buy.buyMessageTitle'),
+              message: this.$i18n.t('buy.buyDuplicate'),
+              confirmButtonText: this.$i18n.t('index.sure')
             })
           } else {
             let data = {

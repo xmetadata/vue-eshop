@@ -27,7 +27,7 @@
           <span style="background-color: #be0000;color: white;">{{ Math.round((productInfo.Goods.market_price - productInfo.Goods.discount_price) / productInfo.Goods.market_price * 100) }} % OFF</span>
         </div>
       </div>
-      <span class="productTimeWrap">{{ $t("index.flashSale") }}
+      <div class="productTimeWrap">{{ $t("index.flashSale") }}
         <span style="color:#be0000;">
           <span id="timer" style="display:none;"></span>
           <strong id="hour_show" style="">00</strong>:
@@ -35,19 +35,22 @@
           <strong id="second_show" style="">00</strong>
         </span>
         <!-- time -->
-      </span>
+      </div>
     </div>
     <div class="productProfile">
       <span>{{ $t("index.productProfile1") }}</span>
       <span>{{ $t("index.productProfile2") }}</span>
       <span>{{ $t("index.productProfile3") }}</span>
     </div>
-    <ul class="productBars">
-      <li><span href="#detialContext" class="scrollBar" scroll-y="0">{{ $t("index.detialContext") }}</span></li>
-      <li><span href="#detialParams" class="scrollBar" scroll-y="50">{{ $t("index.detialParams") }}</span></li>
-      <li><span href="#detialAppraise" class="scrollBar" scroll-y="50">{{ $t("index.detial") }}</span></li>
-      <li><span href="#infoMation" class="scrollBar" scroll-y="40">{{ $t("index.infoMation") }}</span></li>
-    </ul>
+
+    <div class="prodBar" id="prodBar">
+      <ul class="productBars" :class="prodBarFixed == true ? 'isFixed' :''">
+        <li><a href="#detialContext" class="scrollBar" scroll-y="0">{{ $t("index.detialContext") }}</a></li>
+        <li><a href="#detialParams" class="scrollBar" scroll-y="50">{{ $t("index.detialParams") }}</a></li>
+        <li><a href="#detialAppraise" class="scrollBar" scroll-y="50">{{ $t("index.detial") }}</a></li>
+        <li><a href="#infoMation" class="scrollBar" scroll-y="40">{{ $t("index.infoMation") }}</a></li>
+      </ul>
+    </div>
 
     <div class="detailBlock" id="detialContext" style="padding-top:10px">
       <div v-html="productInfo.Goods.goods_desc"></div>
@@ -59,8 +62,9 @@
 
     <comment></comment>
 
-    <div v-html="$t('index.infoTable')"></div>
-
+    <div id="infoMation">
+      <div v-html="$t('index.infoTable')"></div>
+    </div>
     <!--footBar-->
     <div class="footBar" style="box-shadow: 0px -2px 1px #dad8d8;">
       <span class="purchase" id="btnPay">
@@ -71,6 +75,9 @@
       </span>
       <span class="service" id="btnOnline">
         <img src="../assets/image/service.png" />
+        <a id="btnOnline" onclick="chatOnline();" >
+            <span style="line-height:14px"> {{ $t("index.online") }}</span>
+        </a>
       </span>
     </div>
   </div>
@@ -91,7 +98,8 @@ export default {
     return {
       api: process.env.API_SERVER,
       image: process.env.IMG_SERVER,
-      goodsComment: ''
+      goodsComment: '',
+      prodBarFixed: false
     }
   },
   components: {
@@ -110,6 +118,20 @@ export default {
   },
   created: function () {
     this.$store.dispatch('InitProduct')
+  },
+  mounted () {
+    window.addEventListener('scroll', this.handleScroll)
+  },
+  methods: {
+    handleScroll: function () {
+      var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+      var offsetTop = document.querySelector('#prodBar').offsetTop
+      if (scrollTop > offsetTop) {
+        this.prodBarFixed = true
+      } else {
+        this.prodBarFixed = false
+      }
+    }
   }
 }
 </script>
@@ -118,4 +140,10 @@ export default {
 <style scoped>
 .mint-swipe {width: 100%;height: 380px;}
 .img {max-width: 100%;}
+.prodBar .isFixed{
+  position:fixed;
+  background-color:#Fff;
+  top:0;
+  z-index:999;
+}
 </style>

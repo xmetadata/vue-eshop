@@ -26,7 +26,7 @@
       </div>
       <!--for comment-->
       <div class="go-appraise" id="detail-shopping">
-        <a class="btnAppr" style="">{{ $t("index.go_appraise") }}</a>
+        <a class="btnAppr" style="" @click="postComment">{{ $t("index.go_appraise") }}</a>
       </div>
     </div>
   </div>
@@ -35,6 +35,8 @@
 <script>
 import api from '../api'
 import BScroll from 'better-scroll'
+import { MessageBox } from 'mint-ui'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'Comment',
@@ -54,10 +56,49 @@ export default {
         console.log(error.response.status)
       })
   },
+  computed: {
+    ...mapGetters({
+      Product: 'Product'
+    }),
+    productInfo () {
+      return this.Product
+    }
+  },
   mounted () {
     this.$nextTick(() => {
       this.scroll = new BScroll('.wrapper')
     })
+  },
+  methods: {
+    postComment: function () {
+      MessageBox({
+        title: this.$i18n.t('index.commentHd'),
+        message: this.$i18n.t('index.commentHd'),
+        showCancelButton: true,
+        showInput: true,
+        confirmButtonText: this.$i18n.t('index.submit_comment'),
+        cancelButtonText: this.$i18n.t('index.cancel')
+      }).then(({ value, action }) => {
+        let data = {
+          goodsId: this.productInfo.Goods.goods_id,
+          name: '',
+          tel: '',
+          star: '5',
+          content: value,
+          commentPhoto: ''
+        }
+        api.addComment(data).then(function (response) {
+          MessageBox({
+            title: this.$i18n.t('index.diolog'),
+            message: this.$i18n.t('index.sure')
+          })
+        })
+          .catch(function (error) {
+            console.log(error.response.data)
+            console.log(error.response.status)
+          })
+      })
+    }
   }
 }
 </script>

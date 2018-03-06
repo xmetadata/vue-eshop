@@ -55,6 +55,9 @@ export default {
     line2: '商品',
     line3: '合計',
     buyNow: 'すぐに購入',
+    buyMessageTitle: 'ヒント',
+    buyMessage: '注文情報を正しく記入してください！',
+    buyDuplicate: '表書を繰り返し提出しないでください！',
     buyNotice: 'デザインとカラーについて、２件目からメッセージにご記入ください。',
     bottomTipNote: '<div class="bottomTipNote"> <strong>優しいサービス：</strong> お客様にご満足いただけるよう、商品到着後、商品についての問い合わせは、オンラインサービスやメール<a href="mailto:etlobby@yahoo.co.jp" style="color:#F8770E">etlobby@yahoo.co.jp</a>にて承っておりますので、お気軽にご連絡ください。</div>'
   },

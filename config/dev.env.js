@@ -6,5 +6,5 @@ module.exports = merge(prodEnv, {
   NODE_ENV: '"development"',
   API_SERVER: '"apis"',
   IMG_SERVER: '"http://eshop.xmetadata.com"',
-  HOST: '"fashionsneaker.etlobby.com"'
+  HOST: '"vue.xmetadata.com"'
 })

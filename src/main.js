@@ -33,7 +33,7 @@ switch (domainName) {
     Validator.localize(lang, msMY)
     break
   default:
-    lang = 'en'
+    lang = 'ja'
     Validator.localize(lang, en)
 }
 router.beforeEach((to, from, next) => {
