@@ -1,9 +1,14 @@
 import api from '../api'
+import {getGoogleIDScript, getFacebookIDScript, getTwitterIDScript} from '../assets/js/adids.js'
 import { INIT_PRODUCT, INIT_STANDARD, INIT_ORDER } from './types'
 
 export const InitProduct = ({ commit }, data) => {
   api.getProduct(data).then(function (response) {
     commit(INIT_PRODUCT, response.data.result)
+    // AD
+    getGoogleIDScript(response.data.result.Goods.ad_id)
+    getFacebookIDScript('index', response.data.result.Goods.fb_id)
+    getTwitterIDScript(response.data.result.Goods.tt_id)
     let stdData = {
       'goodsId': response.data.result.Goods.goods_id
     }
@@ -28,6 +33,11 @@ export const InitOrder = ({ commit }, data) => {
     if (ret.rtnStr === 'ok') {
       data['rtnInfo'] = ret.rtnInfo
       commit(INIT_ORDER, data)
+      // AD
+      getGoogleIDScript(response.data.result.Goods.ad_id)
+      getAnalyticsIDScript(response.data.result.Goods.ad_id)
+      getFacebookIDScript('dopay', response.data.result.Goods.fb_id)
+      getTwitterIDScript(response.data.result.Goods.tt_id)
       window.location = '/#/confirm'
     } else {
       console.log('order false')

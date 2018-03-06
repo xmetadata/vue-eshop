@@ -18,7 +18,9 @@
       </div>
       <div class="orderNum">
         <span class="price" id="111">
-          <span>{{ productInfo.Goods.discount_price }}</span>
+          <div v-if="selectedStandard">
+            <span>{{ selectedStandard.sd_sequence_price }}</span>
+          </div>
           {{ $t("index.productTaxM") }}
         </span>
         <span id="goodsNum">× {{ goodsNum }}</span>
@@ -26,23 +28,25 @@
     </div>
   </div>
 
-  <div id="goodsStandard">
-    <ul class="productImg" v-for="sd in sdGroup.Standard" :key="sd.sd_id">
-      <label class="label-top" style="display: block;">{{ sd.sd_view_name }}:</label>
-      <li v-for="value_group in sd.sd_values"  @click="onSelectSd(sd.sd_id, value_group.sd_value_id)" :key="value_group.sd_value_id" :class="{ selected: value_group.sd_value_id === selectedSd[sd.sd_id] }">
-        <div v-if="value_group.sd_value_image" >
-          <a href="javascript:;" :title="value_group.sd_value_id">
-            <img :src="image + value_group.sd_value_image">
-          </a>
-          <span>{{ value_group.sd_value_name }}</span>
-        </div>
-        <div v-else>
-          <a href="javascript:;" :title="value_group.sd_value_id">
+  <div v-if="sdGroup">
+    <div id="goodsStandard">
+      <ul class="productImg" v-for="sd in sdGroup.Standard" :key="sd.sd_id">
+        <label class="label-top" style="display: block;">{{ sd.sd_view_name }}:</label>
+        <li v-for="value_group in sd.sd_values"  @click="onSelectSd(sd.sd_id, value_group.sd_value_id)" :key="value_group.sd_value_id" :class="{ selected: value_group.sd_value_id === selectedSd[sd.sd_id] }">
+          <div v-if="value_group.sd_value_image" >
+            <a href="javascript:;" :title="value_group.sd_value_id">
+              <img :src="image + value_group.sd_value_image">
+            </a>
             <span>{{ value_group.sd_value_name }}</span>
-          </a>
-        </div>
-      </li>
-    </ul>
+          </div>
+          <div v-else>
+            <a href="javascript:;" :title="value_group.sd_value_id">
+              <span>{{ value_group.sd_value_name }}</span>
+            </a>
+          </div>
+        </li>
+      </ul>
+    </div>
   </div>
 
   <div class="numberRight"> {{ $t("buy.buyNotice") }} </div>
@@ -102,7 +106,7 @@
     <span>{{ $t("buy.line3") }}:</span>
     <span class="price">
       <span class="buyinfo_table_red">
-        <span id="totalMoney"> {{ OrderAmount }} </span>{{ $t("index.productTaxM") }}
+        <span id="totalMoney"> {{ orderAmount }} </span>{{ $t("index.productTaxM") }}
       </span>
     </span>
   </div>
@@ -226,19 +230,30 @@ export default {
       let host = process.env.NODE_ENV === 'production' ? window.location.host : process.env.HOST
       return countryMap[host.match(/(\w+)\.(\w+\.\w+)/)[2]]
     },
-    OrderAmount () {
-      return Number(this.productInfo.Goods.discount_price * this.goodsNum) + Number(this.productInfo.Goods.extend_fee_value)
+    orderAmount () {
+      if (this.selectedStandard === undefined) {
+        return 0
+      }
+      return Number(this.selectedStandard.sd_sequence_price * this.goodsNum) + Number(this.productInfo.Goods.extend_fee_value)
     },
-    sdInfo () {
-      let temp = ''
-      for (let key in this.selectedSd) {
-        if (temp === '') {
-          temp = key + '##' + this.selectedSd[key]
+    selectedStandard () {
+      if (this.sdGroup !== null) {
+        if (this.selectedSd !== {}) {
+          let standardSequence = this.sdGroup.StandardSequence
+          for (let i = 0; i < standardSequence.length; i++) {
+            for (let j = 0; j < standardSequence[i].sd_sequence_values.length; j++) {
+              if (this.selectedSd[standardSequence[i].sd_sequence_values[j].sd_id] !== standardSequence[i].sd_sequence_values[j].sd_value_id) {
+                break
+              } else if (j === standardSequence[i].sd_sequence_values.length - 1) {
+                return this.sdGroup.StandardSequence[i]
+              }
+            }
+          }
+          return this.sdGroup.StandardSequence[0]
         } else {
-          temp += '&&' + key + '##' + this.selectedSd[key]
+          return this.sdGroup.StandardSequence[0]
         }
       }
-      return temp
     },
     provinceGroup () {
       let locationMap = {
@@ -253,14 +268,11 @@ export default {
     }
   },
   created: function () {
-    if (this.$store.state.product.product == null) {
-      this.$store.dispatch('InitProduct')
-    }
+    this.$store.dispatch('InitProduct')
   },
   methods: {
     doBuy: function () {
       for (let i = 0; i < this.sdGroup.Standard.length; i++) {
-        console.log(this.selectedSd[this.sdGroup.Standard[i]])
         if (this.selectedSd[this.sdGroup.Standard[i].sd_id] === undefined) {
           MessageBox({
             title: this.$i18n.t('buy.buyMessageTitle'),
@@ -280,13 +292,13 @@ export default {
             })
           } else {
             let data = {
+              sourceId: 'FB',
               countryId: this.countryId,
               goodsId: this.productInfo.Goods.goods_id,
-              sdGroupId: this.productInfo.Goods.sd_group_id,
-              sdInfo: this.sdInfo,
+              sdGroupId: this.selectedStandard.sd_sequence_id,
               goodsNum: this.goodsNum,
-              goodsAmount: this.productInfo.Goods.discount_price,
-              OrderAmount: this.OrderAmount,
+              goodsAmount: this.selectedStandard.sd_sequence_price,
+              OrderAmount: this.orderAmount,
               trueName: this.trueName,
               zipCode: this.zipCode,
               provinceId: this.provinceId,
@@ -306,7 +318,6 @@ export default {
       this.provinceId = values[0]
     },
     onSelectSd: function (sdId, sdValueId) {
-      console.log(this.selectedSd)
       this.$set(this.selectedSd, sdId, sdValueId)
     }
   }
