@@ -6,7 +6,7 @@
       </mt-swipe-item>
     </mt-swipe>
     <div class="productTitle">
-      <h3>{{ productInfo.Goods.goods_name }}</h3>
+      <h3>{{ productInfo.Goods.goods_show_name }}</h3>
     </div>
     <div class="productNumber">
       <span class="productNumberLeft">{{ $t("index.productNumberLeft") }}<span>
@@ -19,7 +19,7 @@
     </div>
     <div class="productTax">
       <div>
-        <div>
+        <div class="productTaxU">
           {{ $t("index.productTaxLeft") }}:<span style="font-size: 20px;color:#be0000;"><strong>{{ productInfo.Goods.discount_price }}</strong>{{ $t("index.productTaxM") }}</span>{{ $t("index.productTaxR") }}
         </div>
         <div>
@@ -28,13 +28,9 @@
         </div>
       </div>
       <div class="productTimeWrap">{{ $t("index.flashSale") }}
-        <span style="color:#be0000;">
-          <span id="timer" style="display:none;"></span>
-          <strong id="hour_show" style="">00</strong>:
-          <strong id="minute_show" style="">00</strong>:
-          <strong id="second_show" style="">00</strong>
-        </span>
-        <!-- time -->
+        <yd-countdown :time="finishTime">
+          <span class="timez">{%h}:{%m}:{%s}</span>
+        </yd-countdown>
       </div>
     </div>
     <div class="productProfile">
@@ -45,10 +41,10 @@
 
     <div class="prodBar" id="prodBar">
       <ul class="productBars" :class="prodBarFixed == true ? 'isFixed' :''">
-        <li><a href="#detialContext" class="scrollBar" scroll-y="0">{{ $t("index.detialContext") }}</a></li>
-        <li><a href="#detialParams" class="scrollBar" scroll-y="50">{{ $t("index.detialParams") }}</a></li>
-        <li><a href="#detialAppraise" class="scrollBar" scroll-y="50">{{ $t("index.detial") }}</a></li>
-        <li><a href="#infoMation" class="scrollBar" scroll-y="40">{{ $t("index.infoMation") }}</a></li>
+        <li><a href="javascript:void(0)" @click="goAnchor('#detialContext')" class="scrollBar" scroll-y="0">{{ $t("index.detialContext") }}</a></li>
+        <li><a href="javascript:void(0)" @click="goAnchor('#detialParams')" class="scrollBar" scroll-y="50">{{ $t("index.detialParams") }}</a></li>
+        <li><a href="javascript:void(0)" @click="goAnchor('#detialAppraise')" class="scrollBar" scroll-y="50">{{ $t("index.detial") }}</a></li>
+        <li><a href="javascript:void(0)" @click="goAnchor('#infoMation')" class="scrollBar" scroll-y="40">{{ $t("index.infoMation") }}</a></li>
       </ul>
     </div>
 
@@ -68,14 +64,14 @@
     <!--footBar-->
     <div class="footBar" style="box-shadow: 0px -2px 1px #dad8d8;">
       <span class="purchase" id="btnPay">
-        <a href="/#/order">
+        <a href="javascript:;" @click="toOrder()">
           <img src="../assets/image/buyq1.png" />
           <span style="line-height:20px;margin-top:5%">{{ $t("index.go_to_buy") }}</span>
         </a>
       </span>
       <span class="service" id="btnOnline">
         <img src="../assets/image/service.png" />
-        <a id="btnOnline" onclick="chatOnline();" >
+        <a id="btnOnline" @click="chatOnline()">
             <span style="line-height:14px"> {{ $t("index.online") }}</span>
         </a>
       </span>
@@ -85,12 +81,14 @@
 
 <script>
 import Vue from 'vue'
+import { CountDown } from 'vue-ydui/dist/lib.rem/countdown'
 import Comment from './Comment'
 import { mapGetters, mapActions } from 'vuex'
 import { Swipe, SwipeItem } from 'mint-ui'
 
 Vue.component(Swipe.name, Swipe)
 Vue.component(SwipeItem.name, SwipeItem)
+Vue.component(CountDown.name, CountDown)
 
 export default {
   name: 'Home',
@@ -114,6 +112,9 @@ export default {
     }),
     productInfo () {
       return this.Product
+    },
+    finishTime () {
+      return this.productInfo.Goods.time_remove.replace(/-/g, '/')
     }
   },
   created: function () {
@@ -131,6 +132,31 @@ export default {
       } else {
         this.prodBarFixed = false
       }
+    },
+    toOrder: function () {
+      window.removeEventListener('scroll', this.handleScroll)
+      // this.$ga.event('category', 'action', 'label', 123)
+      this.$ga.event({
+        eventCategory: 'Buynow',
+        eventAction: 'click',
+        eventLabel: 'Buynow',
+        eventValue: 1
+      })
+      this.$router.push('/order')
+    },
+    chatOnline: function () {
+      this.$ga.event({
+        eventCategory: 'chatOnline',
+        eventAction: 'click',
+        eventLabel: 'chatOnline',
+        eventValue: 1
+      })
+      window.location = 'http://plt.zoosnet.net/LR/Chatpre.aspx?id=PLT98198651'
+    },
+    goAnchor (selector) {
+      var anchor = this.$el.querySelector(selector)
+      document.body.scrollTop = anchor.offsetTop - 40
+      document.documentElement.scrollTop = anchor.offsetTop - 40
     }
   }
 }
@@ -140,10 +166,6 @@ export default {
 <style scoped>
 .mint-swipe {width: 100%;height: 380px;}
 .img {max-width: 100%;}
-.prodBar .isFixed{
-  position:fixed;
-  background-color:#Fff;
-  top:0;
-  z-index:999;
-}
+.prodBar .isFixed{position:fixed;background-color:#Fff;top:0;z-index:999;}
+.timez {color:#be0000;}
 </style>

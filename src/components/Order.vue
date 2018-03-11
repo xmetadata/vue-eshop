@@ -1,7 +1,7 @@
 <template>
 <div class="order" v-if="productInfo !== null">
   <!-- header -->
-  <mt-header :title="$t('buy.confirmOrder')">
+  <mt-header :title="$t('buy.confirmOrder')" style="font-size: 22px;">
     <router-link to="/" slot="left">
       <mt-button icon="back"></mt-button>
     </router-link>
@@ -14,7 +14,7 @@
       </div>
       <div class="orderInfo">
         <h5>{{ productInfo.Goods.goods_name }}</h5>
-        <p>{{ productInfo.Goods.goods_name }}</p>
+        <p>{{ productInfo.Goods.promotions }}</p>
       </div>
       <div class="orderNum">
         <span class="price" id="111">
@@ -31,7 +31,7 @@
   <div v-if="sdGroup">
     <div id="goodsStandard">
       <ul class="productImg" v-for="sd in sdGroup.Standard" :key="sd.sd_id">
-        <label class="label-top" style="display: block;">{{ sd.sd_view_name }}:</label>
+        <label class="label-top" style="display:block;margin:0 10px;">{{ sd.sd_view_name }}:</label>
         <li v-for="value_group in sd.sd_values"  @click="onSelectSd(sd.sd_id, value_group.sd_value_id)" :key="value_group.sd_value_id" :class="{ selected: value_group.sd_value_id === selectedSd[sd.sd_id] }">
           <div v-if="value_group.sd_value_image" >
             <a href="javascript:;" :title="value_group.sd_value_id">
@@ -60,43 +60,61 @@
     <label class="numberLable"><span class="require">*</span>{{ $t("buy.goodsNum") }} : </label>
   </div>
 
-  <mt-field :label="$t('buy.trueName')" :state="errors.has('trueName') ? 'error' : ''" v-model="trueName" name="trueName" v-validate="'required'"></mt-field>
-  <span v-show="errors.has('trueName')">{{ errors.first('trueName') }}</span>
+  <mt-field :label="$t('buy.trueName')" :placeholder="$t('buy.trueName')" :state="errors.has('trueName') ? 'error' : ''" v-model="trueName" name="trueName" v-validate="'required'"></mt-field>
+  <span class="errors" v-show="errors.has('trueName')">{{ errors.first('trueName') }}</span>
 
-  <mt-field :label="$t('buy.zipCode')" :state="errors.has('zipCode') ? 'error' : ''" v-model="zipCode" name="zipCode" v-validate="'required'"></mt-field>
-  <span v-show="errors.has('zipCode')">{{ errors.first('zipCode') }}</span>
+  <mt-field :label="$t('buy.zipCode')" :placeholder="$t('buy.zipCode')" :state="errors.has('zipCode') ? 'error' : ''" v-model="zipCode" name="zipCode" v-validate="'required'"></mt-field>
+  <span class="errors" v-show="errors.has('zipCode')">{{ errors.first('zipCode') }}</span>
 
-  <mt-field :label="$t('buy.provinceId')" :state="errors.has('provinceId') ? 'error' : ''" v-model="provinceId" :disabled="true" name="provinceId" v-validate="'required'" @click.native="popupVisible = true"></mt-field>
-  <span v-show="errors.has('provinceId')">{{ errors.first('provinceId') }}</span>
-  <mt-popup v-model="popupVisible" position="bottom" class="mint-popup-4">
-    <mt-picker :slots="provinceGroup" @change="onProvinceChange"></mt-picker>
-  </mt-popup>
+  <div style="height:1px;border-bottom: 1px solid #efeff4;margin-left:20px;margin-right:10px;"></div>
+  <div class="tableBox">
+    <div class="tableTd"> {{ $t("buy.provinceId") }} </div>
+    <div class="tableCell">
+      <select name="provinceId" v-model="provinceId">
+        <option value="" > {{ $t("buy.pleaseChoose") }} </option>
+        <option v-for="province_name in provinceGroup[0].values" :value="province_name" :key="province_name">
+          {{ province_name }}
+        </option>
+      </select>
+    </div>
+  </div>
+  <div class="clear"></div>
 
-  <mt-field v-if="countryId == 'JP' " :label="$t('buy.cityId')" :state="errors.has('cityId') ? 'error' : ''" v-model="cityId" name="cityId" v-validate="'required'"></mt-field>
+  <mt-field v-if="countryId == 'JP' " :label="$t('buy.cityId')" :placeholder="$t('buy.cityId')" :state="errors.has('cityId') ? 'error' : ''" v-model="cityId" name="cityId" v-validate="'required'"></mt-field>
 
-  <span v-show="errors.has('cityId')">{{ errors.first('cityId') }}</span>
+  <span class="errors" v-show="errors.has('cityId')">{{ errors.first('cityId') }}</span>
 
-  <mt-field :label="$t('buy.address')" :state="errors.has('address') ? 'error' : ''" v-model="address" name="address" v-validate="'required'"></mt-field>
-  <span v-show="errors.has('address')">{{ errors.first('address') }}</span>
+  <mt-field :label="$t('buy.address')" :placeholder="$t('buy.address')" :state="errors.has('address') ? 'error' : ''" v-model="address" name="address" v-validate="'required'"></mt-field>
+  <span class="errors" v-show="errors.has('address')">{{ errors.first('address') }}</span>
 
-  <mt-field :label="$t('buy.telPhone')" :state="errors.has('telPhone') ? 'error' : ''" v-model="telPhone" name="telPhone" v-validate="'required'"></mt-field>
-  <span v-show="errors.has('telPhone')">{{ errors.first('telPhone') }}</span>
+  <mt-field :label="$t('buy.telPhone')" :placeholder="$t('buy.telPhone')" :state="errors.has('telPhone') ? 'error' : ''" v-model="telPhone" name="telPhone" v-validate="'required'"></mt-field>
+  <span class="errors" v-show="errors.has('telPhone')">{{ errors.first('telPhone') }}</span>
 
-  <mt-field :label="$t('buy.email')" :state="errors.has('email') ? 'error' : ''" v-model="email" name="email" v-validate="'required|email'"></mt-field>
-  <span v-show="errors.has('email')">{{ errors.first('email') }}</span>
+  <mt-field :label="$t('buy.email')" :placeholder="$t('buy.email')" :state="errors.has('email') ? 'error' : ''" v-model="email" name="email" v-validate="'required|email'"></mt-field>
+  <span class="errors" v-show="errors.has('email')">{{ errors.first('email') }}</span>
 
   <mt-field :label="$t('buy.orderMessage')" name="orderMessage" :placeholder="$t('buy.orderMessage_placeholder')"></mt-field>
+  <div style="height:2px;border-bottom: 1px solid #efeff4;margin-left:20px;margin-right:10px;"></div>
 
-  <mt-field v-if="countryId == 'JP' " :label="$t('buy.pay')" :value="productInfo.Goods.extend_fee_value" :disabled="true">
-    {{ $t("buy.payType") }}
-    <span>{{ productInfo.Goods.extend_fee_value }} {{ $t("buy.payTypeR") }}</span>
-  </mt-field>
-  <mt-field v-else-if="countryId == 'TW'" :label="$t('buy.pay')" :value="productInfo.Goods.extend_fee_value" :disabled="true">
-    <img src="../assets/image/payTypeZH.png" style="width:auto;">
-  </mt-field>
-  <mt-field v-else :label="$t('buy.pay')" :value="productInfo.Goods.extend_fee_value" :disabled="true">
-    <img src="../assets/image/payTypeZH.png" style="width:auto;">
-  </mt-field>
+  <div class="tableBox">
+    <div class="tableTd"> {{ $t("buy.pay") }} </div>
+    <div class="tableCell" v-if="countryId == 'JP' ">
+      <span class="visabox01">
+        <label style="color:#be0000; font-weight:bold;">{{ $t("buy.payType") }}
+          <span>{{ productInfo.Goods.extend_fee_value }} {{ $t("buy.payTypeR") }}</span>
+        </label>
+      </span>
+    </div>
+    <div class="tableCell" v-else-if="countryId == 'TW' ">
+      <img src="../assets/image/payTypeZH.png" style="width:auto;padding-top:14px;">
+    </div>
+    <div class="tableCell" v-else>
+      <img src="../assets/image/payTypeEN.png" style="width:auto;padding-top:14px;">
+    </div>
+  </div>
+
+  <div class="clear"></div>
+  <div style="height:2px;border-bottom: 1px solid #efeff4;margin-left:20px;margin-right:10px;"></div>
 
   <div class="line">
     <span>{{ $t("buy.line1") }}</span>
@@ -115,6 +133,7 @@
   <mt-button type="danger" size="large" @click.native="doBuy">{{ $t("buy.buyNow") }}</mt-button>
   <br />
   <div v-html="$t('buy.bottomTipNote')"></div>
+  <br />
 </div>
 </template>
 
@@ -122,14 +141,12 @@
 import Vue from 'vue'
 import location from '../assets/js/location'
 import { mapGetters, mapActions } from 'vuex'
-import { Field, Header, Button, Popup, Picker, MessageBox } from 'mint-ui'
+import { Field, Header, Button, MessageBox } from 'mint-ui'
 import { Validator } from 'vee-validate'
 
 Vue.component(Field.name, Field)
 Vue.component(Header.name, Header)
 Vue.component(Button.name, Button)
-Vue.component(Popup.name, Popup)
-Vue.component(Picker.name, Picker)
 
 const dictionary = {
   ja: {
@@ -195,7 +212,6 @@ export default {
       zipCode: '',
       provinceId: '',
       cityId: '',
-      areaId: '#',
       address: '',
       telPhone: '',
       email: '',
@@ -296,19 +312,26 @@ export default {
               countryId: this.countryId,
               goodsId: this.productInfo.Goods.goods_id,
               sdGroupId: this.selectedStandard.sd_sequence_id,
-              goodsNum: this.goodsNum,
+              goodsNum: this.goodsNum.toString(),
               goodsAmount: this.selectedStandard.sd_sequence_price,
-              OrderAmount: this.orderAmount,
+              orderAmount: this.orderAmount.toString(),
               trueName: this.trueName,
               zipCode: this.zipCode,
               provinceId: this.provinceId,
               cityId: this.cityId,
-              areaId: this.areaId,
               address: this.address,
               telPhone: this.telPhone,
               email: this.email,
               orderMessage: this.orderMessage
             }
+            this.$ga.ecommerce.addItem({
+              id: this.productInfo.Goods.goods_id,
+              name: this.productInfo.Goods.goods_name,
+              sku: this.selectedStandard.sd_sequence_id,
+              category: 'goods',
+              price: this.orderAmount,
+              quantity: '1'
+            })
             this.$store.dispatch('InitOrder', data)
           }
         }
@@ -324,8 +347,7 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-.mint-header {background-color: #be0000;}
-.mint-popup-4 {width: 100%;}
+<style>
+  .mint-popup-4 {width: 100%; }
+  .picker-slot-wrapper, .picker-item {backface-visibility: hidden;}
 </style>

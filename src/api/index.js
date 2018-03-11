@@ -3,15 +3,13 @@ import axios from 'axios'
 export default {
   getProduct: function () {
     let host = process.env.NODE_ENV === 'production' ? window.location.host : process.env.HOST
-    let data = {
-      urlName: host
-    }
-    return axios.post('/apis/BestShop/goods/getGoodsInfo.do', data)
+    return axios.post('/apis/BestShop/goods/getGoodsInfo.do', {urlName: host})
   },
   getProductStandard: function (data) {
     return axios.post('/apis/BestShop/goods/getGoodsStandardInfo.do', data)
   },
   createOrder: function (data) {
+    console.log(data)
     return axios.post('/apis/BestShop/goods/order.do', data)
   },
   getComment: function () {

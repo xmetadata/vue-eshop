@@ -18,7 +18,7 @@
             <font color="#be0000"> {{ OrderInfo.rtnInfo }}</font>
             <br>
             {{ $t("dopay.payAmount") }}：
-            <font color="#be0000">  {{ $t("index.productCoinBefor") }} {{ OrderInfo.OrderAmount }}  {{ $t("index.productCoinAfter") }}  </font>
+            <font color="#be0000">  {{ $t("index.productCoinBefor") }} {{ OrderInfo.orderAmount }}  {{ $t("index.productCoinAfter") }}  </font>
           </div>
           <div style="text-align:left;padding:10px 15px 20px">{{ $t("dopay.notice") }}</div>
           <div align="center" style="padding:0px 15px">
@@ -45,7 +45,6 @@ export default {
       Order: 'Order'
     }),
     OrderInfo () {
-      console.log(this.Order)
       return this.Order
     }
   }

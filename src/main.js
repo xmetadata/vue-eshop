@@ -2,7 +2,9 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import App from './App'
+import axios from 'axios'
 import router from './router'
+import VueAnalytics from 'vue-analytics'
 import './assets/css/style.css'
 import { i18n, loadLanguageAsync } from './assets/js/i18n-setup'
 import VeeValidate, { Validator } from 'vee-validate'
@@ -17,6 +19,17 @@ Vue.config.productionTip = process.env.NODE_ENV === 'production'
 Vue.use(VeeValidate)
 
 let host = Vue.config.productionTip ? window.location.host : process.env.HOST
+Vue.use(VueAnalytics, {
+  id: axios.post('/apis/BestShop/goods/getGoodsInfo.do', {urlName: host}).then(response => {
+    return response.data.result.Goods.ad_id
+  }),
+  ecommerce: {
+    enabled: true,
+    enhanced: true
+  },
+  router
+})
+
 let domainName = host.match(/(\w+)\.(\w+\.\w+)/)[2]
 let lang = ''
 switch (domainName) {
@@ -30,6 +43,10 @@ switch (domainName) {
     break
   case 'couposhop.com':
     lang = 'ms_MY'
+    Validator.localize(lang, msMY)
+    break
+  case 'fitanow.com':
+    lang = 'en'
     Validator.localize(lang, msMY)
     break
   default:
