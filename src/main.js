@@ -24,8 +24,7 @@ Vue.use(VueAnalytics, {
     return response.data.result.Goods.ad_id
   }),
   ecommerce: {
-    enabled: true,
-    enhanced: true
+    enabled: true
   },
   router
 })

@@ -20,10 +20,10 @@
     <div class="productTax">
       <div>
         <div class="productTaxU">
-          {{ $t("index.productTaxLeft") }}:<span style="font-size: 20px;color:#be0000;"><strong>{{ productInfo.Goods.discount_price }}</strong>{{ $t("index.productTaxM") }}</span>{{ $t("index.productTaxR") }}
+          {{ $t("index.productTaxLeft") }}:<span style="font-size: 20px;color:#be0000;">{{ $t("index.productCoinBefor") }}<strong>{{ productInfo.Goods.discount_price }}</strong>{{ $t("index.productCoinAfter") }}</span>{{ $t("index.productTaxR") }}
         </div>
         <div>
-          {{ $t("index.productTax") }}:{{ productInfo.Goods.market_price }}{{ $t("index.productTaxM") }}
+          {{ $t("index.productTax") }}:{{ $t("index.productCoinBefor") }}{{ productInfo.Goods.market_price }}{{ $t("index.productCoinAfter") }}
           <span style="background-color: #be0000;color: white;">{{ Math.round((productInfo.Goods.market_price - productInfo.Goods.discount_price) / productInfo.Goods.market_price * 100) }} % OFF</span>
         </div>
       </div>
@@ -142,6 +142,7 @@ export default {
         eventLabel: 'Buynow',
         eventValue: 1
       })
+      window.fbq('track', 'AddToCart')
       this.$router.push('/order')
     },
     chatOnline: function () {
@@ -164,7 +165,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.mint-swipe {width: 100%;height: 380px;}
 .img {max-width: 100%;}
 .prodBar .isFixed{position:fixed;background-color:#Fff;top:0;z-index:999;}
 .timez {color:#be0000;}

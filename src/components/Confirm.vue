@@ -3,7 +3,7 @@
     <div class="mui-content" id="container">
       <div class="trackFixed">
         <h4>
-      <a href="javascript:history.go(-1);"></a>{{ $t("dopay.title") }}
+      <a href="javascript:goHome();"></a>{{ $t("dopay.title") }}
     </h4>
       </div>
       <header class="mui-bar mui-bar-nav">
@@ -22,7 +22,7 @@
           </div>
           <div style="text-align:left;padding:10px 15px 20px">{{ $t("dopay.notice") }}</div>
           <div align="center" style="padding:0px 15px">
-            <button type="button" class="succuss_center_a" onclick="jjavascript:window.location.href='/'">{{ $t("dopay.succuss_center") }}</button>
+            <button type="button" class="succuss_center_a" @click="goHome()" >{{ $t("dopay.succuss_center") }}</button>
           </div>
         </div>
       </div>
@@ -46,6 +46,40 @@ export default {
     }),
     OrderInfo () {
       return this.Order
+    }
+  },
+  mounted () {
+    this.sendEcommerce()
+  },
+  methods: {
+    goHome: function () {
+      // this.$ga.event('category', 'action', 'label', 123)
+      this.$ga.event({
+        eventCategory: 'goHome',
+        eventAction: 'click',
+        eventLabel: 'goHome',
+        eventValue: 1
+      })
+      this.$router.push('/')
+    },
+    sendEcommerce: function () {
+      window.fbq('track', 'Purchase', {value: this.OrderInfo.orderAmount, currency: 'USD'})
+      this.$ga.ecommerce.addItem({
+        id: this.OrderInfo.goodsId,
+        name: this.OrderInfo.goodsName,
+        sku: this.OrderInfo.sdGroupId,
+        category: '0',
+        price: this.OrderInfo.goodsAmount,
+        quantity: this.goodsNum
+      })
+      this.$ga.ecommerce.addTransaction({
+        id: this.OrderInfo.rtnInfo,
+        affiliation: this.OrderInfo.goodsName,
+        revenue: this.OrderInfo.orderAmount,
+        shipping: '0',
+        tax: '0'
+      })
+      this.$ga.ecommerce.send()
     }
   }
 }

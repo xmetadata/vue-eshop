@@ -56,7 +56,7 @@ export default {
     line3: '合計',
     buyNow: '提交訂單',
     buyMessageTitle: '提示',
-    buyMessage: '請確定訂單資訊填寫正確！',
+    buyMessage: '請選擇規格型號！',
     buyDuplicate: '請不要重複提交表單！',
     buyNotice: '如果您想購買兩件以上不同規格的產品，請在下方留言欄中標注清楚。',
     bottomTipNote: '<div class="bottomTipNote"><strong>溫馨提示：</strong>支持貨到付款+免郵費+七天無理由退換貨！收到商品後有任何疑問請聯繫我們在線客服，或發郵件至<a href="mailto:hiqushop.service@yahoo.com" style="color:#F8770E">hiqushop.service@yahoo.com</a></div>'

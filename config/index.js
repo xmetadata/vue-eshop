@@ -11,7 +11,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
         '/apis': {
-            target: 'http://120.78.50.107',
+            target: 'http://eshop.xmetadata.com',
             changeOrigin: true,
             pathRewrite: {
                 '^/apis': '/'

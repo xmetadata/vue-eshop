@@ -18,10 +18,14 @@
       </div>
       <div class="orderNum">
         <span class="price" id="111">
+          {{ $t("index.productCoinBefor") }}
           <div v-if="selectedStandard">
             <span>{{ selectedStandard.sd_sequence_price }}</span>
           </div>
-          {{ $t("index.productTaxM") }}
+          <div v-else>
+            <span>{{ productInfo.Goods.discount_price }}</span>
+          </div>
+          {{ $t("index.productCoinAfter") }}
         </span>
         <span id="goodsNum">× {{ goodsNum }}</span>
       </div>
@@ -80,9 +84,10 @@
   </div>
   <div class="clear"></div>
 
-  <mt-field v-if="countryId == 'JP' " :label="$t('buy.cityId')" :placeholder="$t('buy.cityId')" :state="errors.has('cityId') ? 'error' : ''" v-model="cityId" name="cityId" v-validate="'required'"></mt-field>
-
-  <span class="errors" v-show="errors.has('cityId')">{{ errors.first('cityId') }}</span>
+  <div v-if="countryId == 'JP' ">
+    <mt-field :label="$t('buy.cityId')" :placeholder="$t('buy.cityId')" :state="errors.has('cityId') ? 'error' : ''" v-model="cityId" name="cityId" v-validate="'required'"></mt-field>
+    <span class="errors" v-show="errors.has('cityId')">{{ errors.first('cityId') }}</span>
+  </div>
 
   <mt-field :label="$t('buy.address')" :placeholder="$t('buy.address')" :state="errors.has('address') ? 'error' : ''" v-model="address" name="address" v-validate="'required'"></mt-field>
   <span class="errors" v-show="errors.has('address')">{{ errors.first('address') }}</span>
@@ -124,7 +129,7 @@
     <span>{{ $t("buy.line3") }}:</span>
     <span class="price">
       <span class="buyinfo_table_red">
-        <span id="totalMoney"> {{ orderAmount }} </span>{{ $t("index.productTaxM") }}
+        {{ $t("index.productCoinBefor") }}<span id="totalMoney"> {{ orderAmount }} </span>{{ $t("index.productCoinAfter") }}
       </span>
     </span>
   </div>
@@ -265,9 +270,10 @@ export default {
               }
             }
           }
-          return this.sdGroup.StandardSequence[0]
+          // return this.sdGroup.StandardSequence[0]
+          return {sd_sequence_price: this.productInfo.Goods.discount_price}
         } else {
-          return this.sdGroup.StandardSequence[0]
+          return {sd_sequence_price: this.productInfo.Goods.discount_price}
         }
       }
     },
@@ -288,6 +294,15 @@ export default {
   },
   methods: {
     doBuy: function () {
+      this.$ga.event({
+        eventCategory: 'OpenCreditCart',
+        eventAction: 'click',
+        eventLabel: 'OpenCreditCart',
+        eventValue: 1
+      })
+
+      window.fbq('track', 'at-oncePayment')
+
       for (let i = 0; i < this.sdGroup.Standard.length; i++) {
         if (this.selectedSd[this.sdGroup.Standard[i].sd_id] === undefined) {
           MessageBox({
@@ -300,6 +315,8 @@ export default {
       }
       this.$validator.validateAll().then((result) => {
         if (result) {
+          this.$router.push('/order')
+
           if (this.Order !== null) {
             MessageBox({
               title: this.$i18n.t('buy.buyMessageTitle'),
@@ -311,6 +328,7 @@ export default {
               sourceId: 'FB',
               countryId: this.countryId,
               goodsId: this.productInfo.Goods.goods_id,
+              goodsName: this.productInfo.Goods.goods_name,
               sdGroupId: this.selectedStandard.sd_sequence_id,
               goodsNum: this.goodsNum.toString(),
               goodsAmount: this.selectedStandard.sd_sequence_price,
@@ -324,14 +342,6 @@ export default {
               email: this.email,
               orderMessage: this.orderMessage
             }
-            this.$ga.ecommerce.addItem({
-              id: this.productInfo.Goods.goods_id,
-              name: this.productInfo.Goods.goods_name,
-              sku: this.selectedStandard.sd_sequence_id,
-              category: 'goods',
-              price: this.orderAmount,
-              quantity: '1'
-            })
             this.$store.dispatch('InitOrder', data)
           }
         }
